@@ -1,8 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "utils.h"
-#include "data_structures.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <time.h>
+# include <string.h>
+# include "utils.h"
+# include "data_structures.h"
+# include "metrics.h"
 
 int main(int argc, char *argv[]) {
     printf("Bienvenido al programa de análisis de ventas de la pizzería.\n");
@@ -17,6 +19,7 @@ int main(int argc, char *argv[]) {
     int size = 0;
     struct order *orders = read_csv(argv[1], &size);
     if (!orders) {
+        printf("ERROR el nombre del archivo es incorrecto");
         return 1; // Error al leer el archivo
     }
 
@@ -36,6 +39,10 @@ int main(int argc, char *argv[]) {
         printf("  Cantidad: %d\n", orders[random_index].quantity);
         printf("  Precio total: %.2f\n", orders[random_index].total_price);
     }
+
+    // Una pureba de la función pms que encuentra la pizza más vendida.
+    char *mas_vendido = pms(&size, orders);
+    printf("\n%s fue la pizza más vendida\n", mas_vendido);
 
     // Liberar memoria
     free(orders);
