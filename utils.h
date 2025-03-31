@@ -41,38 +41,38 @@ struct order* read_csv(const char *filename, int *size) {
                &current_order->total_price,
                current_order->pizza_size,
                current_order->pizza_category,
-               ingredientes_y_nombre);
+               ingredientes_y_nombre); // Los últimos dos atributos son guardados en una sola variable para manejarlos aparte.
         
-        char inicial = '"';
-        int suma = 0;
+        char ingredientes[200] = {0}; // String donde se copia la lista de ingredientes del archivo.
+        char nombre[100] = {0}; // String donde se guarda el nombre de la pizza.
+        int indice = 0; // Primer índice sin ocupar en ingredientes.
+        
+        int suma = 0; // Variable de control para saber donde cortar ingredientes_y_nombre.
         int i;
-        char ingredientes[200] = {0};
-        char nombre[100] = {0};
-        int indice = 0;
 
-        for (i = 0; i < sizeof(ingredientes_y_nombre); i++) {
-            if (suma < 2) {
-                if (ingredientes_y_nombre[i] != inicial) {
+        for (i = 0; i < sizeof(ingredientes_y_nombre); i++) { // Iterar  por cada caracter en ingredientes_y_nombre.
+            if (suma < 2) { // Condicion para separar ingredientes de nombre.
+                if (ingredientes_y_nombre[i] != '"') { // Si el caracter no es una " copiarlo al primer índice desocupado.
                     ingredientes[indice] = ingredientes_y_nombre[i];
-                    indice++;
+                    indice++; // Incrementar en uno el primer índice desocupado.
                 }
                 else {
-                    suma++;
+                    suma++; // Si el caracter sí es una " se incrementa suma en 1, cuando suma alcanze 2 significa que se llegó al final de la lista de ingredientes.
                 }
             }
-            else {
+            else { // Se llegó al final de la lista de ingredientes.
                 break;
             }
         }
-        int ultimo = i + 1;
-        for (i = 0; i<sizeof(ingredientes_y_nombre); i++) {
-            // char caracter = ingredientes_y_nombre[ultimo + i];
-            if (ingredientes_y_nombre[ultimo + i] == 0) {
+        int ultimo = i + 1; // Se registra el último índice revisado como el ídice del caracter que está dos espacios después de donde se encontró la ", saltandose así la , divisoria del .csv.
+        for (i = 0; i<sizeof(ingredientes_y_nombre); i++) { // Iterar por cada caracter en ingredientes_y_nombre.
+            if (ingredientes_y_nombre[ultimo + i] == 0) { // Si tras la coma se lee un caracter nulo terminar el ciclo.
                 break;
             }
-            nombre[i] = ingredientes_y_nombre[ultimo + i];
+            nombre[i] = ingredientes_y_nombre[ultimo + i]; // Si el caracter no es nulo copiarlo a nombre.
         }
 
+        // Asignar los valores de ingredientes y nombre a sus atributos correspondientes.
         strcpy(current_order->pizza_ingredients, ingredientes);
         strcpy(current_order->pizza_name, nombre);
 

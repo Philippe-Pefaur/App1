@@ -43,6 +43,9 @@ int main(int argc, char *argv[]) {
     // Una pureba de la función pms que encuentra la pizza más vendida.
     char *mas_vendido = pms(&size, orders);
     printf("\n%s fue la pizza más vendida\n", mas_vendido);
+    free(mas_vendido); // pms y pls guardan los nombres en memoria dinámica, liberar tras usar para evitar contaminación.
+    char *menos_vendido = pls(&size, orders);
+    printf("\n%s fue la pizza menos vendida\n", mas_vendido);
 
     // Liberar memoria
     free(orders);
