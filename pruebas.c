@@ -1,10 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "data_structures.h"
-#include "utils.h"
+# include <stdio.h>
+# include <string.h>
+# include <stdlib.h>
+# include "data_structures.h"
 
-struct order* read_csv(const char *filename, int *size) {
+// Esta versión de read_csv es específica este archivo, 
+// la diferencia es que se le puede entregar el nombre 
+// del archivo como vairable, esto hace mucho más fácil 
+// usar el debugger.
+struct order* read_csv(char filename[50], int *size) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error: No se pudo abrir el archivo %s\n", filename);
@@ -83,31 +86,101 @@ struct order* read_csv(const char *filename, int *size) {
     return orders;
 }
 
-// Función que registra los diferentes nombres de las pizzas en las ordenes extraídas
-// en una arreglo de strings externo a la función y, a su vez, guarda la cantidad de
-// pizzas pedidas según su nombre en un arreglo de enteros externo a la función.
-// El proceso es tal que al finalizar, el número de pizzas pedidas de nombre nombres[i]
-// se encuentra en sumas[i].
+// Explicaciones en metrics.h.
 int conteo_por_nombre(char (*pnombres)[100], int (*psumas)[50], int *size, struct order *orders) {
     int i;
-    int index = 0; // Variable de control que indica el primer espacio vació en el arreglo nombres y sumas.
+    int index = 0;
 
-    // Se itera por cada orden registrada.
     for (i = 0; i < *size; i++) {
         int j;
-        int control = 0; // Variable de control que indica si se encontró una coincidencia (1) o no (0).
-        for (j = 0; j <= index; j++) // Se itera por cada elemento de nombres que no esté vacío más el primer elemento vacío.
-            if (strcmp(*(pnombres + j), orders[i].pizza_name) == 0) { // Se revisa si el nombre de la pizza ya se encuentra en nobres.
-                (*psumas)[j] += orders[i].quantity; // Si se encuentra en la nombres se suma su cantidad a sumas en el mismo ídice que fue encontrada la coincidencia.
-                control = 1; // Se modifica control indicando que sí se encontró una coincidencia.
+        int control = 0;
+        for (j = 0; j <= index; j++)
+            if (strcmp(*(pnombres + j), orders[i].pizza_name) == 0) {
+                (*psumas)[j] += orders[i].quantity;
+                control = 1;
                 break;
             }
         if (!control) {
-            strcpy(*(pnombres + index), orders[i].pizza_name); // Si no, este es un nuevo nombre, entonces se registra en el primer espacio vacío de nombres.
-            (*psumas)[index] = orders[i].quantity; // Se registra el número de pizzas pedidas en el primer índice vacío de ordenes.
-            index++; // Se suma uno al índice para que este nuevamente corresponda al primer espacio vacío.
+            strcpy(*(pnombres + index), orders[i].pizza_name);
+            (*psumas)[index] = orders[i].quantity;
+            index++;
         }   
     }
 
-    return index; // Se devuelve el último íncide vacío para saber cuántos nombres y sumas fueron registrados.
+    return index;
+}
+
+// Explicaciones en metrics.h.
+char* pms(int *size, struct order *orders) {
+    char nombres[50][100] = {0};
+    int sumas[50] = {0};
+
+    int index = conteo_por_nombre(nombres, &sumas, size, orders);
+
+    int i;
+    int max_index = 0;
+    for (i = 1; i < index; i++) {
+        if (sumas[i] > sumas[max_index]) {
+            max_index = i;
+        }
+    }
+
+    char *mas_vendido = (char*)malloc(100 * sizeof(char));
+    if (mas_vendido != NULL) {
+        strcpy(mas_vendido, nombres[max_index]);
+    } 
+    else {
+        printf("ERROR al alocar memoria.");
+        return NULL;
+    }
+
+    return mas_vendido;
+}
+
+// Explicaciones en metrics.h.
+char* pls(int *size, struct order *orders) {
+    char nombres[50][100] = {0};
+    int sumas[50] = {0};
+
+    int index = conteo_por_nombre(nombres, &sumas, size, orders);
+
+    int i;
+    int min_index = 0;
+    for (i = 1; i < index; i++) {
+        if (sumas[i] < sumas[min_index]) {
+            min_index = i;
+        }
+    }
+
+    char *menos_vendido = (char*)malloc(100 * sizeof(char));
+    if (menos_vendido != NULL) {
+        strcpy(menos_vendido, nombres[min_index]);
+    } 
+    else {
+        printf("ERROR al alocar memoria.");
+        return NULL;
+    }
+
+    return menos_vendido;
+}
+
+int main() {
+    // Crear las ordenes para probar las funciones
+    char archivo[50] = "ventas_demo.csv";
+    int size;
+
+    // Esta versión de read_csv es específica este archivo, 
+    // la diferencia es que se le puede entregar el nombre 
+    // del archivo como vairable, esto hace mucho más fácil 
+    // usar el debugger.
+    struct order *orders = read_csv(archivo, &size); 
+
+    // Probar las funciones
+    char *mas_vendido = pms(&size, orders);
+    printf("\n%s fue la pizza más vendida\n", mas_vendido);
+    free(mas_vendido); // pms y pls guardan los nombres en memoria dinámica, liberar tras usar para evitar contaminación.
+    char *menos_vendido = pls(&size, orders);
+    printf("\n%s fue la pizza menos vendida\n", mas_vendido);
+
+    return 0;
 }

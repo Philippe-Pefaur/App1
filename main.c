@@ -1,10 +1,10 @@
-# include <stdio.h>
-# include <stdlib.h>
-# include <time.h>
-# include <string.h>
-# include "utils.h"
-# include "data_structures.h"
-# include "metrics.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include "data_structures.h"
+#include "utils.h"
+#include "metrics.h"
 
 int main(int argc, char *argv[]) {
     printf("Bienvenido al programa de análisis de ventas de la pizzería.\n");
