@@ -322,10 +322,109 @@ char *apd(int *size, struct order *orders) {
     // Crear string de resultado
     char *resultado = (char*)malloc(100 * sizeof(char));
     if (resultado != NULL) {
-        snprintf(resultado, 100, "Promedio de pizzas por día: %.2f", promedio);
+        snprintf(resultado, 100, "Promedio de pizzas por dia: %.2f", promedio);
     } else {
         printf("ERROR al reservar memoria.\n");
         return NULL;
+    }
+
+    return resultado;
+}
+// Función que encuentra el ingrediente más vendido entre todas las ordenes.
+char *ims(int *size, struct order *orders) {
+    struct ingrediente_total {
+        char nombre[50];
+        int cantidad;
+    } ingredientes[1000];
+
+    int ingredientes_count = 0;
+
+    for (int i = 0; i < *size; i++) {
+        char ingredientes_linea[200];
+        strcpy(ingredientes_linea, orders[i].pizza_ingredients);
+
+        char *token = strtok(ingredientes_linea, ",");
+        while (token != NULL) {
+            // Eliminar espacios iniciales si hay
+            while (*token == ' ') token++;
+
+            int encontrado = 0;
+            for (int j = 0; j < ingredientes_count; j++) {
+                if (strcmp(ingredientes[j].nombre, token) == 0) {
+                    ingredientes[j].cantidad += orders[i].quantity;
+                    encontrado = 1;
+                    break;
+                }
+            }
+
+            if (!encontrado) {
+                strcpy(ingredientes[ingredientes_count].nombre, token);
+                ingredientes[ingredientes_count].cantidad = orders[i].quantity;
+                ingredientes_count++;
+            }
+
+            token = strtok(NULL, ",");
+        }
+    }
+
+    // Buscar el ingrediente más vendido
+    int max_index = 0;
+    for (int i = 1; i < ingredientes_count; i++) {
+        if (ingredientes[i].cantidad > ingredientes[max_index].cantidad) {
+            max_index = i;
+        }
+    }
+
+    // Crear string de resultado
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "%s con %d unidades", ingredientes[max_index].nombre, ingredientes[max_index].cantidad);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+// Función que encuentra la cantidad de pizzas por categoría
+char *hp(int *size, struct order *orders) {
+    struct categoria_total {
+        char categoria[20];
+        int cantidad;
+    } categorias[100];
+
+    int cat_count = 0;
+
+    for (int i = 0; i < *size; i++) {
+        int encontrada = 0;
+        for (int j = 0; j < cat_count; j++) {
+            if (strcmp(categorias[j].categoria, orders[i].pizza_category) == 0) {
+                categorias[j].cantidad += orders[i].quantity;
+                encontrada = 1;
+                break;
+            }
+        }
+
+        if (!encontrada) {
+            strcpy(categorias[cat_count].categoria, orders[i].pizza_category);
+            categorias[cat_count].cantidad = orders[i].quantity;
+            cat_count++;
+        }
+    }
+
+    // Construir el string de resultado
+    char *resultado = (char *)malloc(500 * sizeof(char));
+    if (resultado == NULL) {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    resultado[0] = '\0'; // Inicializar como string vacío
+
+    for (int i = 0; i < cat_count; i++) {
+        char linea[100];
+        snprintf(linea, 100, "%s: %d pizzas\n", categorias[i].categoria, categorias[i].cantidad);
+        strcat(resultado, linea);
     }
 
     return resultado;

@@ -79,6 +79,14 @@ int main(int argc, char *argv[]) {
     char *promedio_dia = apd(&size, orders);
     printf("%s pizzas\n", promedio_dia);
     free(promedio_dia);
+    //Una prueba de la función que encuentra el ingrediente más vendido entre todas las ordenes.
+    char *ingrediente_top = ims(&size, orders);
+    printf("Ingrediente mas vendido: %s\n", ingrediente_top);
+    free(ingrediente_top);
+    //Una prueba de la función que muestra todas las categorías con su cantidad vendida.
+    char *categorias = hp(&size, orders);
+    printf("Pizzas vendidas por categoria:\n%s", categorias);
+    free(categorias);
 
 
     // Liberar memoria
