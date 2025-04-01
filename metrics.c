@@ -1,36 +1,9 @@
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include "data_structures.h"
-
-// Función que registra los diferentes nombres de las pizzas en las ordenes extraídas
-// en una arreglo de strings externo a la función y, a su vez, guarda la cantidad de
-// pizzas pedidas según su nombre en un arreglo de enteros externo a la función.
-// El proceso es tal que al finalizar, el número de pizzas pedidas de nombre nombres[i]
-// se encuentra en sumas[i].
-int conteo_por_nombre(char (*pnombres)[100], int (*psumas)[50], int *size, struct order *orders) {
-    int i;
-    int index = 0; // Variable de control que indica el primer espacio vació en el arreglo nombres y sumas.
-
-    // Se itera por cada orden registrada.
-    for (i = 0; i < *size; i++) {
-        int j;
-        int control = 0; // Variable de control que indica si se encontró una coincidencia (1) o no (0).
-        for (j = 0; j <= index; j++) // Se itera por cada elemento de nombres que no esté vacío más el primer elemento vacío.
-            if (strcmp(*(pnombres + j), orders[i].pizza_name) == 0) { // Se revisa si el nombre de la pizza ya se encuentra en nobres.
-                (*psumas)[j] += orders[i].quantity; // Si se encuentra en la nombres se suma su cantidad a sumas en el mismo ídice que fue encontrada la coincidencia.
-                control = 1; // Se modifica control indicando que sí se encontró una coincidencia.
-                break;
-            }
-        if (!control) {
-            strcpy(*(pnombres + index), orders[i].pizza_name); // Si no, este es un nuevo nombre, entonces se registra en el primer espacio vacío de nombres.
-            (*psumas)[index] = orders[i].quantity; // Se registra el número de pizzas pedidas en el primer índice vacío de ordenes.
-            index++; // Se suma uno al índice para que este nuevamente corresponda al primer espacio vacío.
-        }   
-    }
-
-    return index; // Se devuelve el último íncide vacío para saber cuántos nombres y sumas fueron registrados.
-}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "data_structures.h"
+#include "utils.h"
+#include "metrics.h"
 
 // Función que encuentra la pizza más vendida entre todas las ordenes.
 char* pms(int *size, struct order *orders) {
