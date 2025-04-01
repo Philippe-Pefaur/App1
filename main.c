@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
 
     // Verificar que se pase el nombre del archivo como argumento
     if (argc < 2) {
+        printf("%d\n",argc);
         printf("Uso: %s <ventas_demo.csv>\n", argv[0]);
         return 1;
     }
@@ -40,12 +41,38 @@ int main(int argc, char *argv[]) {
         printf("  Precio total: %.2f\n", orders[random_index].total_price);
     }
 
-    // Una pureba de la función pms que encuentra la pizza más vendida.
+    // Una prueba de la función pms que encuentra la pizza más vendida.
     char *mas_vendido = pms(&size, orders);
-    printf("\n%s fue la pizza más vendida\n", mas_vendido);
+    printf("\n%s fue la pizza mas vendida\n", mas_vendido);
     free(mas_vendido); // pms y pls guardan los nombres en memoria dinámica, liberar tras usar para evitar contaminación.
+    
+    // Una prueba de la función pms que encuentra la pizza menos vendida.
     char *menos_vendido = pls(&size, orders);
-    printf("\n%s fue la pizza menos vendida\n", mas_vendido);
+    printf("\n%s fue la pizza menos vendida\n\n", menos_vendido);
+    free(menos_vendido);
+    
+
+    //Una prueba de la función dms que encuentra la fecha mas recaudada.
+    char *mayor_fecha_dinero = dms(&size, orders);
+    printf("La fecha con mas recaudacion fue %s\n", mayor_fecha_dinero);
+    free(mayor_fecha_dinero);
+
+    //Una prueba de la función dls que encuentra la fecha menos recaudada.
+    char *menor_fecha_dinero = dls(&size, orders);
+    printf("La fecha con menor recaudacion fue %s\n", menor_fecha_dinero);
+    free(menor_fecha_dinero);
+    
+    //Una prueba de la función dms que encuentra la fecha con más pizzas vendidas.
+    char *mas_pizzas = dmsp(&size, orders);
+    printf("La fecha con mas pizzas vendidas fue %s\n", mas_pizzas);
+    free(mas_pizzas);
+
+    //Una prueba de la función dms que encuentra la fecha con más pizzas vendidas.
+    char *menos_pizzas = dlsp(&size, orders);
+    printf("La fecha con menos pizzas vendidas fue %s\n", menos_pizzas);
+    free(menos_pizzas);
+
+
 
     // Liberar memoria
     free(orders);

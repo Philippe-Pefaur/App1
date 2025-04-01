@@ -3,7 +3,7 @@
 
 // Función que registra los diferentes nombres de las pizzas en las ordenes extraídas
 // en una arreglo de strings externo a la función y, a su vez, guarda la cantidad de
-// pizzas pedidas según su nomobre en un arreglo de enteros externo a la función.
+// pizzas pedidas según su nombre en un arreglo de enteros externo a la función.
 // El proceso es tal que al finalizar, el número de pizzas pedidas de nombre nombres[i]
 // se encuentra en sumas[i].
 int conteo_por_nombre(char (*pnombres)[100], int (*psumas)[50], int *size, struct order *orders) {
@@ -50,13 +50,14 @@ char* pms(int *size, struct order *orders) {
         strcpy(mas_vendido, nombres[max_index]); // Si sí, copiar el nombre con el mismo índice donde se encontró la mayor suma al espacio.
     } 
     else {
-        printf("ERROR al alocar memoria."); // Si no, adevertir error y terminar la función.
+        printf("ERROR al reservar memoria."); // Si no, adevertir error y terminar la función.
         return NULL;
     }
 
     return mas_vendido; // Se devuelve la dirección en el espacio de memoria donde se encuentra el nombre.
 }
 
+// Función que encuentra la pizza menos vendida entre todas las ordenes.
 char* pls(int *size, struct order *orders) {
     char nombres[50][100] = {0}; // Variable donde registrar los nombres de las diferentes pizzas.
     int sumas[50] = {0}; // Variable donde registrar las sumas de las cantidades de pizzas pedidas según su nombre.
@@ -76,11 +77,186 @@ char* pls(int *size, struct order *orders) {
         strcpy(menos_vendido, nombres[min_index]); // Si sí, copiar el nombre con el mismo índice donde se encontró la menor suma al espacio.
     } 
     else {
-        printf("ERROR al alocar memoria."); // Si no, adevertir error y terminar la función.
+        printf("ERROR al reservar memoria."); // Si no, adevertir error y terminar la función.
         return NULL;
     }
 
     return menos_vendido; // Se devuelve la dirección en el espacio de memoria donde se encuentra el nombre.
 }
+
+// Función que encuentra la fecha con mayor recaudación total en dinero
+char *dms(int *size, struct order *orders) {
+    char fechas[100][20] = {0};
+    float totales[100] = {0.0};
+    int index = 0;
+
+    // Agrupar total por fecha
+    for (int i = 0; i < *size; i++) {
+        int encontrada = 0;
+        for (int j = 0; j < index; j++) {
+            if (strcmp(fechas[j], orders[i].order_date) == 0) {
+                totales[j] += orders[i].total_price;
+                encontrada = 1;
+                break;
+            }
+        }
+
+        if (!encontrada) {
+            strcpy(fechas[index], orders[i].order_date);
+            totales[index] = orders[i].total_price;
+            index++;
+        }
+    }
+
+    // Encontrar la fecha con mayor recaudación
+    int max_index = 0;
+    for (int i = 1; i < index; i++) {
+        if (totales[i] > totales[max_index]) {
+            max_index = i;
+        }
+    }
+
+    // Reservar espacio y formatear string
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "%s con $%.2f", fechas[max_index], totales[max_index]);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+// Función que encuentra la fecha con menor recaudación total en dinero
+char *dls(int *size, struct order *orders) {
+    char fechas[100][20] = {0};
+    float totales[100] = {0.0};
+    int index = 0;
+
+    // Agrupar total recaudado por fecha
+    for (int i = 0; i < *size; i++) {
+        int encontrada = 0;
+        for (int j = 0; j < index; j++) {
+            if (strcmp(fechas[j], orders[i].order_date) == 0) {
+                totales[j] += orders[i].total_price;
+                encontrada = 1;
+                break;
+            }
+        }
+
+        if (!encontrada) {
+            strcpy(fechas[index], orders[i].order_date);
+            totales[index] = orders[i].total_price;
+            index++;
+        }
+    }
+
+    // Buscar la fecha con menor recaudación
+    int min_index = 0;
+    for (int i = 1; i < index; i++) {
+        if (totales[i] < totales[min_index]) {
+            min_index = i;
+        }
+    }
+
+    // Crear string con la fecha y monto
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "%s con $%.2f", fechas[min_index], totales[min_index]);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+// Función que encuentra la fecha con mayor cantidad de pizzas vendidas
+char *dmsp(int *size, struct order *orders) {
+    char fechas[100][20] = {0};
+    int cantidades[100] = {0};
+    int index = 0;
+
+    // Agrupar cantidades por fecha
+    for (int i = 0; i < *size; i++) {
+        int encontrada = 0;
+        for (int j = 0; j < index; j++) {
+            if (strcmp(fechas[j], orders[i].order_date) == 0) {
+                cantidades[j] += orders[i].quantity;
+                encontrada = 1;
+                break;
+            }
+        }
+
+        if (!encontrada) {
+            strcpy(fechas[index], orders[i].order_date);
+            cantidades[index] = orders[i].quantity;
+            index++;
+        }
+    }
+
+    // Buscar la fecha con más pizzas vendidas
+    int max_index = 0;
+    for (int i = 1; i < index; i++) {
+        if (cantidades[i] > cantidades[max_index]) {
+            max_index = i;
+        }
+    }
+
+    // Crear string con la fecha y cantidad
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "%s con %d pizzas", fechas[max_index], cantidades[max_index]);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+// Función que encuentra la fecha con menor cantidad de pizzas vendidas
+char *dlsp(int *size, struct order *orders) {
+    char fechas[100][20] = {0};
+    int cantidades[100] = {0};
+    int index = 0;
+
+    // Agrupar cantidad de pizzas por fecha
+    for (int i = 0; i < *size; i++) {
+        int encontrada = 0;
+        for (int j = 0; j < index; j++) {
+            if (strcmp(fechas[j], orders[i].order_date) == 0) {
+                cantidades[j] += orders[i].quantity;
+                encontrada = 1;
+                break;
+            }
+        }
+
+        if (!encontrada) {
+            strcpy(fechas[index], orders[i].order_date);
+            cantidades[index] = orders[i].quantity;
+            index++;
+        }
+    }
+
+    // Buscar la fecha con menos pizzas vendidas
+    int min_index = 0;
+    for (int i = 1; i < index; i++) {
+        if (cantidades[i] < cantidades[min_index]) {
+            min_index = i;
+        }
+    }
+
+    // Crear string con la fecha y cantidad
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "%s con %d pizzas", fechas[min_index], cantidades[min_index]);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+
+
 
 #endif
