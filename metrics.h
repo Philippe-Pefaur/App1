@@ -256,6 +256,80 @@ char *dlsp(int *size, struct order *orders) {
 
     return resultado;
 }
+//Función que calcula el promedio de pizzas por orden
+char *apo(int *size, struct order *orders) {
+    int total_pizzas = 0;
+    int ordenes_unicas[1000] = {0};
+    int total_ordenes = 0;
+
+    for (int i = 0; i < *size; i++) {
+        total_pizzas += orders[i].quantity;
+
+        // Revisar si este order_id ya fue contado
+        int ya_conteada = 0;
+        for (int j = 0; j < total_ordenes; j++) {
+            if (ordenes_unicas[j] == orders[i].order_id) {
+                ya_conteada = 1;
+                break;
+            }
+        }
+
+        if (!ya_conteada) {
+            ordenes_unicas[total_ordenes] = orders[i].order_id;
+            total_ordenes++;
+        }
+    }
+
+    float promedio = (float)total_pizzas / total_ordenes;
+
+    // Crear string de resultado
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "Promedio de pizzas por orden: %.2f", promedio);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
+//Función que calcula el promedio de pizzas por día
+char *apd(int *size, struct order *orders) {
+    int total_pizzas = 0;
+    char fechas_unicas[1000][20];
+    int total_dias = 0;
+
+    for (int i = 0; i < *size; i++) {
+        total_pizzas += orders[i].quantity;
+
+        // Revisar si esta fecha ya fue contada
+        int ya_conteada = 0;
+        for (int j = 0; j < total_dias; j++) {
+            if (strcmp(fechas_unicas[j], orders[i].order_date) == 0) {
+                ya_conteada = 1;
+                break;
+            }
+        }
+
+        if (!ya_conteada) {
+            strcpy(fechas_unicas[total_dias], orders[i].order_date);
+            total_dias++;
+        }
+    }
+
+    float promedio = (float)total_pizzas / total_dias;
+
+    // Crear string de resultado
+    char *resultado = (char*)malloc(100 * sizeof(char));
+    if (resultado != NULL) {
+        snprintf(resultado, 100, "Promedio de pizzas por día: %.2f", promedio);
+    } else {
+        printf("ERROR al reservar memoria.\n");
+        return NULL;
+    }
+
+    return resultado;
+}
 
 
 
