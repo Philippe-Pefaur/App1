@@ -71,7 +71,14 @@ int main(int argc, char *argv[]) {
     char *menos_pizzas = dlsp(&size, orders);
     printf("La fecha con menos pizzas vendidas fue %s\n", menos_pizzas);
     free(menos_pizzas);
-
+    //Una prueba de la función que calcula el promedio de pizzas por orden 
+    char *promedio_pizzas = apo(&size, orders);
+    printf("%s pizzas\n", promedio_pizzas);
+    free(promedio_pizzas);
+    //Una prueba de la función que calcula el proedio de pizzas por día
+    char *promedio_dia = apd(&size, orders);
+    printf("%s pizzas\n", promedio_dia);
+    free(promedio_dia);
 
 
     // Liberar memoria
