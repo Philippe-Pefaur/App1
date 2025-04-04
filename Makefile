@@ -16,4 +16,4 @@ $(TARGET): $(OBJECTS)
 
 # Regla para limpiar archivos generados
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	del /Q $(OBJECTS) $(TARGET)

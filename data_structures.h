@@ -17,4 +17,11 @@ struct order {
     char pizza_name[100];          // Nombre completo de la pizza
 };
 
+// Estructura que guarda el puntero, y el formato respectivo para su resultado, de cada función métrica
+struct metricas {
+    char* (*funcion)(int *size, struct order *orders); // Puntero función
+    const char* formateo; // Formato para resultados
+};
+
+
 #endif

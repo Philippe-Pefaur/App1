@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    printf("Bienvenido al programa de analisis de ventas de la pizzería.\n");
+    printf("------------------------------------\nBienvenido al programa de analisis de ventas de la pizzeria.\n");
 
     // Verificar que se pase el nombre del archivo como argumento
     if (argc < 3)
@@ -28,77 +28,92 @@ int main(int argc, char *argv[])
     // Imprimir el número total de órdenes cargadas
     printf("Se cargaron %d ordenes.\n", size);
 
+    // Arreglo donde guardar los punteros y formato de las funciones a ejecutrar
+    struct metricas arreglo_metricas[10] = {
+        {pms, "\n%s fue la pizza mas vendida.\n"},
+        {pls, "\n%s fue la pizza menos vendida.\n"},
+        {dms, "\nLa fecha con mas recaudacion fue %s.\n"},
+        {dls, "\nLa fecha con menor recaudacion fue %s.\n"},
+        {dmsp, "\nLa fecha con mas pizzas vendidas fue %s.\n"},
+        {dlsp, "\nLa fecha con menos pizzas vendidas fue %s.\n"},
+        {apo, "\n%s\n"},
+        {apd, "\n%s\n"},
+        {ims, "\nIngrediente mas vendido: %s\n"},
+        {hp, "\nPizzas vendidas por categoria:\n%s"}
+    };
+
+    // Arreglo metricas a ejecutar
+    struct metricas ejecutar_metricas[10] = {0};
+
     // Procesar cada métrica pasada como argumento
+    int indice = 0;
     for (int i = 2; i < argc; i++)
     {
         if (strcmp(argv[i], "pms") == 0)
         {
-            char *mas_vendido = pms(&size, orders);
-            printf("\n%s fue la pizza mas vendida.\n", mas_vendido);
-            free(mas_vendido);
+            ejecutar_metricas[indice] = arreglo_metricas[0];
+            indice++;
         }
         else if (strcmp(argv[i], "pls") == 0)
         {
-            char *menos_vendido = pls(&size, orders);
-            printf("\n%s fue la pizza menos vendida.\n", menos_vendido);
-            free(menos_vendido);
+            ejecutar_metricas[indice] = arreglo_metricas[1];
+            indice++;
         }
         else if (strcmp(argv[i], "dms") == 0)
         {
-            char *mayor_fecha_dinero = dms(&size, orders);
-            printf("\nLa fecha con más recaudacion fue %s.\n", mayor_fecha_dinero);
-            free(mayor_fecha_dinero);
+            ejecutar_metricas[indice] = arreglo_metricas[2];
+            indice++;
         }
         else if (strcmp(argv[i], "dls") == 0)
         {
-            char *menor_fecha_dinero = dls(&size, orders);
-            printf("\nLa fecha con menor recaudacion fue %s.\n", menor_fecha_dinero);
-            free(menor_fecha_dinero);
+            ejecutar_metricas[indice] = arreglo_metricas[3];
+            indice++;
         }
         else if (strcmp(argv[i], "dmsp") == 0)
         {
-            char *mas_pizzas = dmsp(&size, orders);
-            printf("\nLa fecha con mas pizzas vendidas fue %s.\n", mas_pizzas);
-            free(mas_pizzas);
+            ejecutar_metricas[indice] = arreglo_metricas[4];
+            indice++;
         }
         else if (strcmp(argv[i], "dlsp") == 0)
         {
-            char *menos_pizzas = dlsp(&size, orders);
-            printf("\nLa fecha con menos pizzas vendidas fue %s.\n", menos_pizzas);
-            free(menos_pizzas);
+            ejecutar_metricas[indice] = arreglo_metricas[5];
+            indice++;
         }
         else if (strcmp(argv[i], "apo") == 0)
         {
-            char *promedio_pizzas = apo(&size, orders);
-            printf("\n%s\n", promedio_pizzas);
-            free(promedio_pizzas);
+            ejecutar_metricas[indice] = arreglo_metricas[6];
+            indice++;
         }
         else if (strcmp(argv[i], "apd") == 0)
-        {
-            char *promedio_dia = apd(&size, orders);
-            printf("\n%s\n", promedio_dia);
-            free(promedio_dia);
+        {;
+            ejecutar_metricas[indice] = arreglo_metricas[7];
+            indice++;
         }
         else if (strcmp(argv[i], "ims") == 0)
         {
-            char *ingrediente_top = ims(&size, orders);
-            printf("\nIngrediente mas vendido: %s\n", ingrediente_top);
-            free(ingrediente_top);
+            ejecutar_metricas[indice] = arreglo_metricas[8];
+            indice++;
         }
         else if (strcmp(argv[i], "hp") == 0)
         {
-            char *categorias = hp(&size, orders);
-            printf("\nPizzas vendidas por categoria:\n%s", categorias);
-            free(categorias);
+            ejecutar_metricas[indice] = arreglo_metricas[9];
+            indice++;
         }
-        else
-        {
+        else {
             printf("\nMetrica desconocida: %s\n", argv[i]);
         }
     }
 
+    // Ejecutar funciones pedidas:
+    for (int i = 0; i < indice; i++){
+        char *resultado = (ejecutar_metricas[i].funcion)(&size, orders);
+        printf(ejecutar_metricas[i].formateo, resultado);
+        free(resultado);
+    }
+
     // Liberar memoria
     free(orders);
-
+    
+    printf("------------------------------------\n"); // Imprimir línea que marca el fin de las métricas imprimidas por pantalla
     return 0;
 }
