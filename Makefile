@@ -1,7 +1,7 @@
 # Variables
 CC = gcc                      # Compilador
 CFLAGS = -std=c99 -Wall -Wextra  # Opciones de compilación
-TARGET = app1                 # Nombre del ejecutable
+TARGET = app1.exe                 # Nombre del ejecutable
 SOURCES = main.c utils.c metrics.c  # Archivos fuente
 HEADERS = data_structures.h utils.h metrics.h  # Archivos de cabecera
 OBJECTS = $(SOURCES:.c=.o)    # Archivos objeto generados a partir de los fuentes
