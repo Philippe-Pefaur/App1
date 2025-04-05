@@ -1,3 +1,6 @@
+# Para compilar simplemente escribir el comando *make* o *mingw32-make*
+# Dependiendo de como esté instalado en su dispositivo.
+
 # Variables
 CC = gcc                      # Compilador
 CFLAGS = -std=c99 -Wall -Wextra  # Opciones de compilación

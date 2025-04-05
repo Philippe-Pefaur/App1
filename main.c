@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     // Verificar que se pase el nombre del archivo como argumento
     if (argc < 3)
     {
-        printf("Uso: %s <ventas.csv> <métrica1> [<métrica2> ...]\n", argv[0]);
+        printf("Uso: %s <ventas.csv> <metrica1> [<metrica2> ...]\n", argv[0]);
         return 1;
     }
 

@@ -56,3 +56,6 @@ dkms.conf
 
 # Archivos csv
 *.csv
+
+# Archivo temporal de purebas
+pruebas.c
